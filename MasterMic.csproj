@@ -6,7 +6,15 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	 <AssemblyTitle>NomeApplicazione</AssemblyTitle>
+	  <Description>Better!</Description>
+	  <Company>Ciro Notaro Software</Company>
+	  <Product>MasterMic</Product>
+	  <Authors>Notaro Ciro</Authors>
+	  <Version>1.0.0</Version>
+	  <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
+
 
   <ItemGroup>
     <PackageReference Include="NAudio" Version="2.2.1" />

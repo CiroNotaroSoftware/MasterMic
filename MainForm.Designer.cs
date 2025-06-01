@@ -179,6 +179,7 @@ namespace MicEffectEcho
             // 
             // soundBoardList
             // 
+            soundBoardList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             soundBoardList.FormattingEnabled = true;
             soundBoardList.ItemHeight = 15;
             soundBoardList.Location = new Point(6, 30);
@@ -197,6 +198,7 @@ namespace MicEffectEcho
             Controls.Add(btnStop);
             Name = "MainForm";
             Text = "MasterMic";
+            Load += MainForm_Load;
             effectsPanel.ResumeLayout(false);
             effectsPanel.PerformLayout();
             tabControl1.ResumeLayout(false);

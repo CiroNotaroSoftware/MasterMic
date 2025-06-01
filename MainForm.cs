@@ -201,5 +201,10 @@ namespace MicEffectEcho
                 soundboard.PlaySound(fullPath);
             }
         }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

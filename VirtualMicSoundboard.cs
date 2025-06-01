@@ -8,9 +8,25 @@ public class VirtualMicSoundboard
     private WaveOutEvent waveOut;
     private BufferedWaveProvider bufferedWaveProvider;
     private WaveFormat waveFormat = new WaveFormat(48000, 16, 2);
+    BufferedWaveProvider defaultBuff;
+    private WaveOutEvent defaultWaveOut;
 
     public VirtualMicSoundboard(int virtualMicDeviceIndex)
     {
+        if (virtualMicDeviceIndex != 0)
+        {
+            defaultBuff = new BufferedWaveProvider(waveFormat)
+            {
+                DiscardOnBufferOverflow = true
+            };
+
+            defaultWaveOut = new WaveOutEvent
+            {
+                DeviceNumber = 0
+            };
+            defaultWaveOut.Init(defaultBuff);
+            defaultWaveOut.Play();
+        }
         bufferedWaveProvider = new BufferedWaveProvider(waveFormat)
         {
             DiscardOnBufferOverflow = true
@@ -35,6 +51,10 @@ public class VirtualMicSoundboard
 
         while ((bytesRead = resampler.Read(buffer, 0, buffer.Length)) > 0)
         {
+            if (defaultBuff != null)
+            {
+                defaultBuff.AddSamples(buffer, 0, bytesRead);
+            }
             bufferedWaveProvider.AddSamples(buffer, 0, bytesRead);
         }
 
