@@ -1,0 +1,58 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+out/
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# NuGet
+*.nupkg
+# NuGet Packages folder
+packages/
+
+# ASP.NET temporary files
+appsettings.*.json
+
+# Resharper
+_ReSharper*/
+
+# DotCover
+*.dotCover
+
+# Backup & report files
+*.bak
+*.backup
+*.log
+*.err
+
+# Others
+*.dbmdl
+*.jfm
+*.psess
+*.vsp
+*.vspx
+*.vsmdi
+*.cachefile
+*.pdb
+*.mdb
+
+# Test results
+TestResults/
+*.trx
+
+# Dotnet publish
+publish/
+
+# Others
+*.publishsettings
