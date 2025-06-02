@@ -25,7 +25,7 @@ namespace MicEffectEcho
             RefreshWAVFileList();
 
             lb_dir.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\MasterMic";
-            soundboard = new VirtualMicSoundboard(cmbOutput.SelectedIndex);
+            soundboard = new VirtualMicSoundboard(cmbOutput.SelectedIndex, selfListen.Checked);
         }
 
         private void LoadDevices()
@@ -34,14 +34,14 @@ namespace MicEffectEcho
             for (int i = 0; i < WaveIn.DeviceCount; i++)
             {
                 var device = WaveIn.GetCapabilities(i);
-                cmbInput.Items.Add($"{i}: {device.ProductName}");
+                cmbInput.Items.Add(i.ToString() + ": " + device.ProductName);
             }
 
             cmbOutput.Items.Clear();
             for (int i = 0; i < WaveOut.DeviceCount; i++)
             {
                 var device = WaveOut.GetCapabilities(i);
-                cmbOutput.Items.Add($"{i}: {device.ProductName}");
+                cmbOutput.Items.Add(i.ToString() + ": " + device.ProductName);
             }
 
             if (cmbInput.Items.Count > 0) cmbInput.SelectedIndex = 0;
@@ -141,7 +141,7 @@ namespace MicEffectEcho
 
         private void cbox_eff_childvoice_CheckStateChanged(object sender, EventArgs e)
         {
-            if (cbox_eff_childvoice.Checked)
+            if (cbox_eff_deepvoice.Checked)
             {
                 requestedEffects.Add("DeepVoice");
             }
@@ -155,7 +155,7 @@ namespace MicEffectEcho
         {
             if (soundboard != null) soundboard.Stop();
 
-            soundboard = new VirtualMicSoundboard(cmbOutput.SelectedIndex);
+            soundboard = new VirtualMicSoundboard(cmbOutput.SelectedIndex, selfListen.Checked);
         }
 
         private void RefreshWAVFileList()
@@ -167,9 +167,16 @@ namespace MicEffectEcho
                 Directory.CreateDirectory(folder);
             }
 
-            string[] wavFiles = Directory.GetFiles(folder, "*.mp3", SearchOption.TopDirectoryOnly);
+            string[] mp3Files = Directory.GetFiles(folder, "*.mp3", SearchOption.TopDirectoryOnly);
 
             soundBoardList.Items.Clear();
+
+            foreach (string file in mp3Files)
+            {
+                soundBoardList.Items.Add(Path.GetFileName(file));
+            }
+
+            string[] wavFiles = Directory.GetFiles(folder, "*.wav", SearchOption.TopDirectoryOnly);
 
             foreach (string file in wavFiles)
             {
@@ -205,6 +212,11 @@ namespace MicEffectEcho
         private void MainForm_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void checkBox1_CheckStateChanged(object sender, EventArgs e)
+        {
+            soundboard.setAutoListen(selfListen.Checked);
         }
     }
 }

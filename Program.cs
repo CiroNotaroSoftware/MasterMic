@@ -1,4 +1,5 @@
-
+using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using System;
 using System.Windows.Forms;
 
@@ -6,11 +7,10 @@ namespace MicEffectEcho
 {
     static class Program
     {
-
         [STAThread]
         static void Main()
         {
-            if(!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)+ "\\MasterMic"))
+            if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)+ "\\MasterMic"))
             {
                 Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\MasterMic");
             }

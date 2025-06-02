@@ -24,14 +24,17 @@ namespace MicEffectEcho
             btnStop = new Button();
             cbox_eff_reverb = new CheckBox();
             effectsPanel = new Panel();
-            cbox_eff_childvoice = new CheckBox();
+            cbox_eff_deepvoice = new CheckBox();
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             tabPage2 = new TabPage();
+            selfListen = new CheckBox();
             btn_open = new Button();
             lb_dir = new Label();
             btn_refresh = new Button();
             soundBoardList = new ListBox();
+            lb_input_device = new Label();
+            lb_output_device = new Label();
             effectsPanel.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -42,18 +45,18 @@ namespace MicEffectEcho
             // 
             cmbInput.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cmbInput.FormattingEnabled = true;
-            cmbInput.Location = new Point(12, 12);
+            cmbInput.Location = new Point(53, 12);
             cmbInput.Name = "cmbInput";
-            cmbInput.Size = new Size(625, 23);
+            cmbInput.Size = new Size(584, 23);
             cmbInput.TabIndex = 0;
             // 
             // cmbOutput
             // 
             cmbOutput.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cmbOutput.FormattingEnabled = true;
-            cmbOutput.Location = new Point(12, 41);
+            cmbOutput.Location = new Point(53, 41);
             cmbOutput.Name = "cmbOutput";
-            cmbOutput.Size = new Size(625, 23);
+            cmbOutput.Size = new Size(584, 23);
             cmbOutput.TabIndex = 1;
             cmbOutput.SelectedIndexChanged += cmbOutput_SelectedIndexChanged;
             // 
@@ -94,23 +97,23 @@ namespace MicEffectEcho
             effectsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             effectsPanel.AutoScroll = true;
             effectsPanel.BorderStyle = BorderStyle.FixedSingle;
-            effectsPanel.Controls.Add(cbox_eff_childvoice);
+            effectsPanel.Controls.Add(cbox_eff_deepvoice);
             effectsPanel.Controls.Add(cbox_eff_reverb);
             effectsPanel.Location = new Point(3, 3);
             effectsPanel.Name = "effectsPanel";
             effectsPanel.Size = new Size(611, 259);
             effectsPanel.TabIndex = 6;
             // 
-            // cbox_eff_childvoice
+            // cbox_eff_deepvoice
             // 
-            cbox_eff_childvoice.AutoSize = true;
-            cbox_eff_childvoice.Location = new Point(3, 28);
-            cbox_eff_childvoice.Name = "cbox_eff_childvoice";
-            cbox_eff_childvoice.Size = new Size(85, 19);
-            cbox_eff_childvoice.TabIndex = 6;
-            cbox_eff_childvoice.Text = "Child Voice";
-            cbox_eff_childvoice.UseVisualStyleBackColor = true;
-            cbox_eff_childvoice.CheckStateChanged += cbox_eff_childvoice_CheckStateChanged;
+            cbox_eff_deepvoice.AutoSize = true;
+            cbox_eff_deepvoice.Location = new Point(3, 28);
+            cbox_eff_deepvoice.Name = "cbox_eff_deepvoice";
+            cbox_eff_deepvoice.Size = new Size(84, 19);
+            cbox_eff_deepvoice.TabIndex = 6;
+            cbox_eff_deepvoice.Text = "Deep Voice";
+            cbox_eff_deepvoice.UseVisualStyleBackColor = true;
+            cbox_eff_deepvoice.CheckStateChanged += cbox_eff_childvoice_CheckStateChanged;
             // 
             // tabControl1
             // 
@@ -136,6 +139,7 @@ namespace MicEffectEcho
             // 
             // tabPage2
             // 
+            tabPage2.Controls.Add(selfListen);
             tabPage2.Controls.Add(btn_open);
             tabPage2.Controls.Add(lb_dir);
             tabPage2.Controls.Add(btn_refresh);
@@ -147,6 +151,19 @@ namespace MicEffectEcho
             tabPage2.TabIndex = 1;
             tabPage2.Text = "SoundBoard";
             tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // selfListen
+            // 
+            selfListen.AutoSize = true;
+            selfListen.Checked = true;
+            selfListen.CheckState = CheckState.Checked;
+            selfListen.Location = new Point(529, 6);
+            selfListen.Name = "selfListen";
+            selfListen.Size = new Size(79, 19);
+            selfListen.TabIndex = 4;
+            selfListen.Text = "Self Listen";
+            selfListen.UseVisualStyleBackColor = true;
+            selfListen.CheckStateChanged += checkBox1_CheckStateChanged;
             // 
             // btn_open
             // 
@@ -188,9 +205,29 @@ namespace MicEffectEcho
             soundBoardList.TabIndex = 0;
             soundBoardList.MouseDoubleClick += soundBoardList_MouseDoubleClick;
             // 
+            // lb_input_device
+            // 
+            lb_input_device.AutoSize = true;
+            lb_input_device.Location = new Point(12, 15);
+            lb_input_device.Name = "lb_input_device";
+            lb_input_device.Size = new Size(38, 15);
+            lb_input_device.TabIndex = 8;
+            lb_input_device.Text = "Input:";
+            // 
+            // lb_output_device
+            // 
+            lb_output_device.AutoSize = true;
+            lb_output_device.Location = new Point(2, 44);
+            lb_output_device.Name = "lb_output_device";
+            lb_output_device.Size = new Size(48, 15);
+            lb_output_device.TabIndex = 9;
+            lb_output_device.Text = "Output:";
+            // 
             // MainForm
             // 
             ClientSize = new Size(649, 395);
+            Controls.Add(lb_output_device);
+            Controls.Add(lb_input_device);
             Controls.Add(tabControl1);
             Controls.Add(cmbInput);
             Controls.Add(cmbOutput);
@@ -206,11 +243,12 @@ namespace MicEffectEcho
             tabPage2.ResumeLayout(false);
             tabPage2.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         private CheckBox cbox_eff_reverb;
         private Panel effectsPanel;
-        private CheckBox cbox_eff_childvoice;
+        private CheckBox cbox_eff_deepvoice;
         private TabControl tabControl1;
         private TabPage tabPage1;
         private TabPage tabPage2;
@@ -218,5 +256,8 @@ namespace MicEffectEcho
         private Button btn_refresh;
         private ListBox soundBoardList;
         private Button btn_open;
+        private CheckBox selfListen;
+        private Label lb_input_device;
+        private Label lb_output_device;
     }
 }

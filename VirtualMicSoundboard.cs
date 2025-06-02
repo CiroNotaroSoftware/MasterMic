@@ -3,76 +3,72 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-public class VirtualMicSoundboard
+public class VirtualMicSoundboard : IDisposable
 {
-    private WaveOutEvent waveOut;
-    private BufferedWaveProvider bufferedWaveProvider;
-    private WaveFormat waveFormat = new WaveFormat(48000, 16, 2);
-    BufferedWaveProvider defaultBuff;
-    private WaveOutEvent defaultWaveOut;
+    private WaveOutEvent mainOutput;
+    private WaveOutEvent defaultOutput;
+    private AudioFileReader mainReader;
+    private AudioFileReader defaultReader;
+    private bool autoListen;
 
-    public VirtualMicSoundboard(int virtualMicDeviceIndex)
+    private int mainDeviceIndex;
+
+    public VirtualMicSoundboard(int mainDeviceIndex, bool autoListen)
     {
-        if (virtualMicDeviceIndex != 0)
-        {
-            defaultBuff = new BufferedWaveProvider(waveFormat)
-            {
-                DiscardOnBufferOverflow = true
-            };
-
-            defaultWaveOut = new WaveOutEvent
-            {
-                DeviceNumber = 0
-            };
-            defaultWaveOut.Init(defaultBuff);
-            defaultWaveOut.Play();
-        }
-        bufferedWaveProvider = new BufferedWaveProvider(waveFormat)
-        {
-            DiscardOnBufferOverflow = true
-        };
-
-        waveOut = new WaveOutEvent
-        {
-            DeviceNumber = virtualMicDeviceIndex
-        };
-        waveOut.Init(bufferedWaveProvider);
-        waveOut.Play();
+        this.mainDeviceIndex = mainDeviceIndex;
+        this.autoListen = autoListen;
     }
 
     public void PlaySound(string filePath)
     {
-        var reader = new AudioFileReader(filePath);
-        var resampler = new MediaFoundationResampler(reader, waveFormat);
-        resampler.ResamplerQuality = 60;
+        DisposeOutputsAndReaders();
 
-        byte[] buffer = new byte[waveFormat.AverageBytesPerSecond / 4];
-        int bytesRead;
-
-        while ((bytesRead = resampler.Read(buffer, 0, buffer.Length)) > 0)
+        mainOutput = new WaveOutEvent { DeviceNumber = mainDeviceIndex };
+        mainOutput.PlaybackStopped += OnPlaybackStopped;
+        if (mainDeviceIndex != 0 && autoListen)
         {
-            if (defaultBuff != null)
-            {
-                defaultBuff.AddSamples(buffer, 0, bytesRead);
-            }
-            bufferedWaveProvider.AddSamples(buffer, 0, bytesRead);
+            defaultOutput = new WaveOutEvent { DeviceNumber = 0 };
+            defaultOutput.PlaybackStopped += OnPlaybackStopped;
         }
+        mainReader = new AudioFileReader(filePath);
+        defaultReader = new AudioFileReader(filePath);
 
-        resampler.Dispose();
-        reader.Dispose();
+        mainOutput.Init(mainReader);
+        
+        if (mainDeviceIndex != 0 && autoListen)
+            defaultOutput.Init(defaultReader);
+
+        mainOutput.Play();
+
+        if (mainDeviceIndex != 0 && autoListen)
+            defaultOutput.Play();
+    }
+
+    private void DisposeOutputsAndReaders()
+    {
+        mainOutput?.Stop();
+        defaultOutput?.Stop();
+
+        mainReader?.Dispose();
+        defaultReader?.Dispose();
+        mainReader = null;
+        defaultReader = null;
+
+        mainOutput?.Dispose();
+        defaultOutput?.Dispose();
+        mainOutput = null;
+        defaultOutput = null;
     }
 
     public void Stop()
     {
-        waveOut.Stop();
+        mainOutput?.Stop();
+        defaultOutput?.Stop();
+    }
 
-        bufferedWaveProvider = new BufferedWaveProvider(waveFormat)
-        {
-            DiscardOnBufferOverflow = true
-        };
-
-        waveOut.Init(bufferedWaveProvider);
-        waveOut.Play();
+    public void Dispose()
+    {
+        DisposeOutputsAndReaders();
     }
 
     public static Dictionary<int, string> ListOutputDevices()
@@ -84,5 +80,15 @@ public class VirtualMicSoundboard
             devices[i] = caps.ProductName;
         }
         return devices;
+    }
+
+    private void OnPlaybackStopped(object? sender, StoppedEventArgs e)
+    {
+        DisposeOutputsAndReaders();
+    }
+
+    public void setAutoListen(bool autoListen)
+    {
+        this.autoListen = autoListen;
     }
 }
