@@ -1,3 +1,4 @@
+using MasterMic;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System;
@@ -16,7 +17,7 @@ namespace MicEffectEcho
             }
 
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainForm());
+            Application.Run(new DashboardForm());
         }
     }
 }
