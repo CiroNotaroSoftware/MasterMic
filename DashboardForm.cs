@@ -8,7 +8,11 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Security.Cryptography.Xml;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -16,17 +20,52 @@ namespace MasterMic
 {
     public partial class DashboardForm : Form
     {
+        public const int HOTKEY_ID = 9000;
+        private const int WM_HOTKEY = 0x0312;
+
+        [DllImport("user32.dll")]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+
+        [DllImport("user32.dll")]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        private const int MOD_ALT = 0x1;
+        private const int MOD_CONTROL = 0x2;
+        private const int MOD_SHIFT = 0x4;
+        private const int MOD_WIN = 0x8;
+
+        public static Dictionary<string, KeyBindData> hotkeys = new Dictionary<string, KeyBindData>();
+
         public static DashboardForm? Instance;
 
         // Form Switching System -- DATA //
         private Form activeForm;
         public HomeSubForm homeSubForm;
         public SoundboardSubForm soundboardSubForm;
-
         public DashboardForm()
         {
             Instance = this;
             InitializeComponent();
+
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MasterMic") + "\\hotkeys.json";
+            if(File.Exists(path))
+            {
+                string content = File.ReadAllText(path);
+                hotkeys = JsonSerializer.Deserialize<Dictionary<string, KeyBindData>>(content);
+
+                foreach((string key, KeyBindData value) in hotkeys)
+                {
+                    int modifierInt = HotKeyRecorder.GetModifierInt(value.modifiers);
+                    int keyInt = (int)value.key;
+
+                    DashboardForm.RegisterHotKey(
+                       DashboardForm.Instance.Handle,
+                       DashboardForm.GenerateHotkeyId(key),
+                       modifierInt,
+                       keyInt
+                   );
+                }
+            }
         }
 
         // Listeners //
@@ -58,6 +97,57 @@ namespace MasterMic
             panelContent.Tag = activeForm;
             activeForm.BringToFront();
             activeForm.Show();
-        }        
+        }
+
+        public static int GenerateHotkeyId(string key)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(key));
+                return BitConverter.ToInt32(hash, 0);
+            }
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+
+            if (m.Msg == WM_HOTKEY)
+            {
+                foreach( (string key, KeyBindData value) in hotkeys)
+                {
+                    if (m.WParam.ToInt32() == GenerateHotkeyId(key))
+                    {
+                        if(SoundboardSubForm.Instance == null)
+                        {
+                            MessageBox.Show("Open the dashboard first!");
+                            return;
+                        }
+
+                        foreach (SoundboardButton btn in SoundboardSubForm.Instance.buttons)
+                        {
+                            if(btn.Text.Equals(key))
+                            {
+                                btn.PlayButton.PerformClick();
+                                return;
+                            }
+                        }
+
+                        hotkeys.Remove(key);
+                    }
+                }
+            }
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            File.WriteAllText(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MasterMic"), "hotkeys.json"), JsonSerializer.Serialize(hotkeys));
+
+            foreach ((string key, KeyBindData value) in hotkeys)
+            {
+                UnregisterHotKey(this.Handle, GenerateHotkeyId(key));
+            }
+            base.OnFormClosed(e);
+        }
     }
 }

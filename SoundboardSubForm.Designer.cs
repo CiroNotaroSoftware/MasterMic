@@ -32,7 +32,7 @@
             btn_open = new Button();
             lb_dir = new Label();
             selfListen = new CheckBox();
-            soundBoardList = new ListBox();
+            soundBoardListPanel = new FlowLayoutPanel();
             SuspendLayout();
             // 
             // btn_refresh
@@ -86,18 +86,16 @@
             selfListen.UseVisualStyleBackColor = true;
             selfListen.Click += selfListen_CheckStateChanged;
             // 
-            // soundBoardList
+            // soundBoardListPanel
             // 
-            soundBoardList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            soundBoardList.BackColor = Color.FromArgb(27, 24, 34);
-            soundBoardList.ForeColor = Color.Gainsboro;
-            soundBoardList.FormattingEnabled = true;
-            soundBoardList.ItemHeight = 20;
-            soundBoardList.Location = new Point(12, 51);
-            soundBoardList.Name = "soundBoardList";
-            soundBoardList.Size = new Size(660, 504);
-            soundBoardList.TabIndex = 4;
-            soundBoardList.MouseDoubleClick += soundBoardList_MouseDoubleClick;
+            soundBoardListPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            soundBoardListPanel.FlowDirection = FlowDirection.TopDown;
+            soundBoardListPanel.Location = new Point(-1, 61);
+            soundBoardListPanel.Margin = new Padding(0);
+            soundBoardListPanel.Name = "soundBoardListPanel";
+            soundBoardListPanel.Size = new Size(685, 500);
+            soundBoardListPanel.TabIndex = 4;
+            soundBoardListPanel.SizeChanged += soundBoardListPanel_SizeChanged;
             // 
             // SoundboardSubForm
             // 
@@ -105,7 +103,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(17, 14, 24);
             ClientSize = new Size(684, 561);
-            Controls.Add(soundBoardList);
+            Controls.Add(soundBoardListPanel);
             Controls.Add(selfListen);
             Controls.Add(lb_dir);
             Controls.Add(btn_open);
@@ -125,6 +123,7 @@
         private Button btn_open;
         private Label lb_dir;
         private CheckBox selfListen;
-        private ListBox soundBoardList;
+        private SoundboardButton soudboardButton1;
+        private FlowLayoutPanel soundBoardListPanel;
     }
 }

@@ -30,6 +30,7 @@ namespace MasterMic
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DashboardForm));
             panelSideMenu = new Panel();
             buttonSoundboard = new Button();
             buttonHome = new Button();
@@ -62,13 +63,14 @@ namespace MasterMic
             buttonSoundboard.FlatStyle = FlatStyle.Flat;
             buttonSoundboard.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
             buttonSoundboard.ForeColor = Color.Gainsboro;
+            buttonSoundboard.Image = (Image)resources.GetObject("buttonSoundboard.Image");
+            buttonSoundboard.ImageAlign = ContentAlignment.MiddleLeft;
             buttonSoundboard.Location = new Point(0, 134);
             buttonSoundboard.Name = "buttonSoundboard";
             buttonSoundboard.Padding = new Padding(10, 0, 0, 0);
             buttonSoundboard.Size = new Size(250, 34);
             buttonSoundboard.TabIndex = 2;
             buttonSoundboard.Text = "Soundboard";
-            buttonSoundboard.TextAlign = ContentAlignment.MiddleLeft;
             buttonSoundboard.UseVisualStyleBackColor = true;
             buttonSoundboard.Click += buttonSoundboard_Click;
             // 
@@ -81,13 +83,14 @@ namespace MasterMic
             buttonHome.FlatStyle = FlatStyle.Flat;
             buttonHome.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
             buttonHome.ForeColor = Color.Gainsboro;
+            buttonHome.Image = (Image)resources.GetObject("buttonHome.Image");
+            buttonHome.ImageAlign = ContentAlignment.MiddleLeft;
             buttonHome.Location = new Point(0, 100);
             buttonHome.Name = "buttonHome";
             buttonHome.Padding = new Padding(10, 0, 0, 0);
             buttonHome.Size = new Size(250, 34);
             buttonHome.TabIndex = 1;
             buttonHome.Text = "Home";
-            buttonHome.TextAlign = ContentAlignment.MiddleLeft;
             buttonHome.UseVisualStyleBackColor = true;
             buttonHome.Click += buttonHome_Click;
             // 

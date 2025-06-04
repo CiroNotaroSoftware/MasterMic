@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using MasterMic;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -44,6 +45,42 @@ public class VirtualMicSoundboard : IDisposable
             defaultOutput.Play();
     }
 
+    public void PlaySoundFromButton(string filePath, SoundboardButton btn)
+    {
+        // TODO: Wait for resources cleanup
+        DisposeOutputsAndReaders();
+
+        mainOutput = new WaveOutEvent { DeviceNumber = mainDeviceIndex };
+        mainOutput.PlaybackStopped += (sender, e) =>
+        {
+            btn.IsPlaying = false;
+            DisposeOutputsAndReaders();
+        };
+
+        if (mainDeviceIndex != 0 && autoListen)
+        {
+            defaultOutput = new WaveOutEvent { DeviceNumber = 0 };
+            defaultOutput.PlaybackStopped += (sender, e) =>
+            {
+                btn.IsPlaying = false;
+                DisposeOutputsAndReaders();
+            };
+        }
+        mainReader = new AudioFileReader(filePath);
+        defaultReader = new AudioFileReader(filePath);
+
+        mainOutput.Init(mainReader);
+
+        if (mainDeviceIndex != 0 && autoListen)
+            defaultOutput.Init(defaultReader);
+
+        btn.IsPlaying = true;
+        mainOutput.Play();
+
+        if (mainDeviceIndex != 0 && autoListen)
+            defaultOutput.Play();
+    }
+
     private void DisposeOutputsAndReaders()
     {
         mainOutput?.Stop();
@@ -58,6 +95,11 @@ public class VirtualMicSoundboard : IDisposable
         defaultOutput?.Dispose();
         mainOutput = null;
         defaultOutput = null;
+    }
+
+    void OnPlaybackStopped(object sender, StoppedEventArgs e)
+    {
+        DisposeOutputsAndReaders();
     }
 
     public void Stop()
@@ -80,11 +122,6 @@ public class VirtualMicSoundboard : IDisposable
             devices[i] = caps.ProductName;
         }
         return devices;
-    }
-
-    private void OnPlaybackStopped(object? sender, StoppedEventArgs e)
-    {
-        DisposeOutputsAndReaders();
     }
 
     public void setAutoListen(bool autoListen)

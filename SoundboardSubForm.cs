@@ -12,13 +12,29 @@ namespace MasterMic
 {
     public partial class SoundboardSubForm : Form
     {
+        public static SoundboardSubForm Instance;
+
         public VirtualMicSoundboard soundboard;
+
+        public List<SoundboardButton> buttons;
 
         public SoundboardSubForm()
         {
+            if (Instance == null)
+                Instance = this;
+            else
+                return;
+
             InitializeComponent();
+
+            buttons = new List<SoundboardButton>();
             lb_dir.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\MasterMic";
-            soundboard = new VirtualMicSoundboard(DashboardForm.Instance.homeSubForm.getOutputDeviceCombobox().SelectedIndex, selfListen.Checked);
+            if (DashboardForm.Instance.homeSubForm == null)
+                soundboard = new VirtualMicSoundboard(0, selfListen.Checked);
+            else
+                soundboard = new VirtualMicSoundboard(DashboardForm.Instance.homeSubForm.getOutputDeviceCombobox().SelectedIndex, selfListen.Checked);
+
+            RefreshWAVFileList();
         }
 
         private void RefreshWAVFileList()
@@ -32,18 +48,28 @@ namespace MasterMic
 
             string[] mp3Files = Directory.GetFiles(folder, "*.mp3", SearchOption.TopDirectoryOnly);
 
-            soundBoardList.Items.Clear();
+            soundboard.Stop();
+            buttons.Clear();
+            soundBoardListPanel.Controls.Clear();
 
             foreach (string file in mp3Files)
             {
-                soundBoardList.Items.Add(Path.GetFileName(file));
+                buttons.Add(new SoundboardButton(Path.GetFileName(file)));
             }
 
             string[] wavFiles = Directory.GetFiles(folder, "*.wav", SearchOption.TopDirectoryOnly);
 
             foreach (string file in wavFiles)
             {
-                soundBoardList.Items.Add(Path.GetFileName(file));
+                buttons.Add(new SoundboardButton(Path.GetFileName(file)));
+            }
+
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                buttons[i].Location = new Point(10, (i * 32) + 5);
+                buttons[i].Width = soundBoardListPanel.ClientSize.Width - 10;
+                soundBoardListPanel.Controls.Add(buttons[i]);
+                buttons[i].setBorderColorForFixingFocusQuad(soundBoardListPanel.BackColor);
             }
         }
 
@@ -57,19 +83,9 @@ namespace MasterMic
             System.Diagnostics.Process.Start("explorer.exe", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MasterMic"));
         }
 
-        private void soundBoardList_MouseDoubleClick(object sender, MouseEventArgs e)
+        public void soundBoardListStop()
         {
-            int index = soundBoardList.IndexFromPoint(e.Location);
-            if (index != ListBox.NoMatches)
-            {
-
-                string selectedItem = soundBoardList.Items[index].ToString();
-
-                string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MasterMic");
-                string fullPath = Path.Combine(folder, selectedItem);
-
-                soundboard.PlaySound(fullPath);
-            }
+            soundboard.Stop();
         }
 
         private void selfListen_CheckStateChanged(object sender, EventArgs e)
@@ -78,5 +94,13 @@ namespace MasterMic
         }
 
         public bool getAutoListen() { return selfListen.Checked; }
+
+        private void soundBoardListPanel_SizeChanged(object sender, EventArgs e)
+        {
+            for(int i = 0; i < soundBoardListPanel.Controls.Count; i++)
+            {
+                soundBoardListPanel.Controls[i].Width = soundBoardListPanel.ClientSize.Width - 10;
+            }
+        }
     }
 }
