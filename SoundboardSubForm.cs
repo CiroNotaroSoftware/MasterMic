@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MasterMic
 {
@@ -26,6 +27,12 @@ namespace MasterMic
                 return;
 
             InitializeComponent();
+
+            soundBoardListPanel.FlowDirection = FlowDirection.TopDown;
+            soundBoardListPanel.WrapContents = false;
+            soundBoardListPanel.HorizontalScroll.Enabled = false;
+            soundBoardListPanel.HorizontalScroll.Visible = false;
+            soundBoardListPanel.AutoScroll = true;
 
             buttons = new List<SoundboardButton>();
             lb_dir.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\MasterMic";
@@ -66,10 +73,11 @@ namespace MasterMic
 
             for (int i = 0; i < buttons.Count; i++)
             {
+
                 buttons[i].Location = new Point(10, (i * 32) + 5);
                 buttons[i].Width = soundBoardListPanel.ClientSize.Width - 10;
-                soundBoardListPanel.Controls.Add(buttons[i]);
                 buttons[i].setBorderColorForFixingFocusQuad(soundBoardListPanel.BackColor);
+                soundBoardListPanel.Controls.Add(buttons[i]);
             }
         }
 
@@ -97,7 +105,7 @@ namespace MasterMic
 
         private void soundBoardListPanel_SizeChanged(object sender, EventArgs e)
         {
-            for(int i = 0; i < soundBoardListPanel.Controls.Count; i++)
+            for (int i = 0; i < soundBoardListPanel.Controls.Count; i++)
             {
                 soundBoardListPanel.Controls[i].Width = soundBoardListPanel.ClientSize.Width - 10;
             }

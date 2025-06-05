@@ -65,7 +65,10 @@
             // comboBoxInputDevice
             // 
             comboBoxInputDevice.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            comboBoxInputDevice.BackColor = Color.FromArgb(17, 14, 24);
+            comboBoxInputDevice.FlatStyle = FlatStyle.Flat;
             comboBoxInputDevice.Font = new Font("Microsoft Sans Serif", 12F);
+            comboBoxInputDevice.ForeColor = Color.Gainsboro;
             comboBoxInputDevice.FormattingEnabled = true;
             comboBoxInputDevice.Location = new Point(76, 39);
             comboBoxInputDevice.Name = "comboBoxInputDevice";
@@ -75,7 +78,10 @@
             // comboBoxOutputDevice
             // 
             comboBoxOutputDevice.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            comboBoxOutputDevice.BackColor = Color.FromArgb(17, 14, 24);
+            comboBoxOutputDevice.FlatStyle = FlatStyle.Flat;
             comboBoxOutputDevice.Font = new Font("Microsoft Sans Serif", 12F);
+            comboBoxOutputDevice.ForeColor = Color.Gainsboro;
             comboBoxOutputDevice.FormattingEnabled = true;
             comboBoxOutputDevice.Location = new Point(76, 82);
             comboBoxOutputDevice.Name = "comboBoxOutputDevice";

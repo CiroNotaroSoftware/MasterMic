@@ -33,6 +33,7 @@
             lb_dir = new Label();
             selfListen = new CheckBox();
             soundBoardListPanel = new FlowLayoutPanel();
+            button1 = new Button();
             SuspendLayout();
             // 
             // btn_refresh
@@ -90,12 +91,21 @@
             // 
             soundBoardListPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             soundBoardListPanel.FlowDirection = FlowDirection.TopDown;
-            soundBoardListPanel.Location = new Point(-1, 61);
+            soundBoardListPanel.Location = new Point(0, 61);
             soundBoardListPanel.Margin = new Padding(0);
             soundBoardListPanel.Name = "soundBoardListPanel";
-            soundBoardListPanel.Size = new Size(685, 500);
+            soundBoardListPanel.Size = new Size(684, 501);
             soundBoardListPanel.TabIndex = 4;
             soundBoardListPanel.SizeChanged += soundBoardListPanel_SizeChanged;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(3, 3);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 0;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
             // 
             // SoundboardSubForm
             // 
@@ -125,5 +135,7 @@
         private CheckBox selfListen;
         private SoundboardButton soudboardButton1;
         private FlowLayoutPanel soundBoardListPanel;
+        private Button button1;
     }
+
 }
