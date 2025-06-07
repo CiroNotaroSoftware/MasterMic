@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-public class VirtualMicSoundboard : IDisposable
+public class VirtualMicSoundboard
 {
     private WaveOutEvent mainOutput;
     private WaveOutEvent defaultOutput;
@@ -47,38 +47,46 @@ public class VirtualMicSoundboard : IDisposable
 
     public void PlaySoundFromButton(string filePath, SoundboardButton btn)
     {
-        // TODO: Wait for resources cleanup
         DisposeOutputsAndReaders();
 
-        mainOutput = new WaveOutEvent { DeviceNumber = mainDeviceIndex };
-        mainOutput.PlaybackStopped += (sender, e) =>
+        try
         {
-            btn.IsPlaying = false;
-            DisposeOutputsAndReaders();
-        };
 
-        if (mainDeviceIndex != 0 && autoListen)
-        {
-            defaultOutput = new WaveOutEvent { DeviceNumber = 0 };
-            defaultOutput.PlaybackStopped += (sender, e) =>
+            mainOutput = new WaveOutEvent { DeviceNumber = mainDeviceIndex };
+            mainOutput.PlaybackStopped += (sender, e) =>
             {
                 btn.IsPlaying = false;
                 DisposeOutputsAndReaders();
             };
+
+            if (mainDeviceIndex != 0 && autoListen)
+            {
+                defaultOutput = new WaveOutEvent { DeviceNumber = 0 };
+                defaultOutput.PlaybackStopped += (sender, e) =>
+                {
+                    btn.IsPlaying = false;
+                    DisposeOutputsAndReaders();
+                };
+            }
+            mainReader = new AudioFileReader(filePath);
+            defaultReader = new AudioFileReader(filePath);
+
+            mainOutput.Init(mainReader);
+
+            if (mainDeviceIndex != 0 && autoListen)
+                defaultOutput.Init(defaultReader);
+
+            btn.IsPlaying = true;
+            mainOutput.Play();
+
+            if (mainDeviceIndex != 0 && autoListen)
+                defaultOutput.Play();
+
+        } catch(Exception ex)
+        {
+            MessageBox.Show($"{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            DisposeOutputsAndReaders();
         }
-        mainReader = new AudioFileReader(filePath);
-        defaultReader = new AudioFileReader(filePath);
-
-        mainOutput.Init(mainReader);
-
-        if (mainDeviceIndex != 0 && autoListen)
-            defaultOutput.Init(defaultReader);
-
-        btn.IsPlaying = true;
-        mainOutput.Play();
-
-        if (mainDeviceIndex != 0 && autoListen)
-            defaultOutput.Play();
     }
 
     private void DisposeOutputsAndReaders()
@@ -106,11 +114,6 @@ public class VirtualMicSoundboard : IDisposable
     {
         mainOutput?.Stop();
         defaultOutput?.Stop();
-    }
-
-    public void Dispose()
-    {
-        DisposeOutputsAndReaders();
     }
 
     public static Dictionary<int, string> ListOutputDevices()

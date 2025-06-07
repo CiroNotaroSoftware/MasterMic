@@ -35,7 +35,7 @@ namespace MasterMic
             soundBoardListPanel.AutoScroll = true;
 
             buttons = new List<SoundboardButton>();
-            lb_dir.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\MasterMic";
+            lb_dir.Text = Config.SOUNDBOARD_PATH;
             if (DashboardForm.Instance.homeSubForm == null)
                 soundboard = new VirtualMicSoundboard(0, selfListen.Checked);
             else
@@ -46,14 +46,12 @@ namespace MasterMic
 
         private void RefreshWAVFileList()
         {
-            string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MasterMic");
-
-            if (!Directory.Exists(folder))
+            if (!Directory.Exists(Config.SOUNDBOARD_PATH))
             {
-                Directory.CreateDirectory(folder);
+                Directory.CreateDirectory(Config.SOUNDBOARD_PATH);
             }
 
-            string[] mp3Files = Directory.GetFiles(folder, "*.mp3", SearchOption.TopDirectoryOnly);
+            string[] mp3Files = Directory.GetFiles(Config.SOUNDBOARD_PATH, "*.mp3", SearchOption.TopDirectoryOnly);
 
             soundboard.Stop();
             buttons.Clear();
@@ -64,7 +62,7 @@ namespace MasterMic
                 buttons.Add(new SoundboardButton(Path.GetFileName(file)));
             }
 
-            string[] wavFiles = Directory.GetFiles(folder, "*.wav", SearchOption.TopDirectoryOnly);
+            string[] wavFiles = Directory.GetFiles(Config.SOUNDBOARD_PATH, "*.wav", SearchOption.TopDirectoryOnly);
 
             foreach (string file in wavFiles)
             {
@@ -88,7 +86,7 @@ namespace MasterMic
 
         private void btn_open_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("explorer.exe", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MasterMic"));
+            System.Diagnostics.Process.Start("explorer.exe", Config.SOUNDBOARD_PATH);
         }
 
         public void soundBoardListStop()

@@ -47,13 +47,12 @@ namespace MasterMic
             Instance = this;
             InitializeComponent();
 
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MasterMic") + "\\hotkeys.json";
-            if(File.Exists(path))
+            if (File.Exists(Config.KEYBOUNDS_PATH))
             {
-                string content = File.ReadAllText(path);
+                string content = File.ReadAllText(Config.KEYBOUNDS_PATH);
                 hotkeys = JsonSerializer.Deserialize<Dictionary<string, KeyBindData>>(content);
 
-                foreach((string key, KeyBindData value) in hotkeys)
+                foreach ((string key, KeyBindData value) in hotkeys)
                 {
                     int modifierInt = HotKeyRecorder.GetModifierInt(value.modifiers);
                     int keyInt = (int)value.key;
@@ -86,7 +85,7 @@ namespace MasterMic
         // Form Switching System -- Functions //
         void openChildForm(Form form)
         {
-            if(activeForm != null)
+            if (activeForm != null)
                 activeForm.Hide();
 
             activeForm = form;
@@ -114,11 +113,11 @@ namespace MasterMic
 
             if (m.Msg == WM_HOTKEY)
             {
-                foreach( (string key, KeyBindData value) in hotkeys)
+                foreach ((string key, KeyBindData value) in hotkeys)
                 {
                     if (m.WParam.ToInt32() == GenerateHotkeyId(key))
                     {
-                        if(SoundboardSubForm.Instance == null)
+                        if (SoundboardSubForm.Instance == null)
                         {
                             MessageBox.Show("Open the dashboard first!");
                             return;
@@ -126,7 +125,7 @@ namespace MasterMic
 
                         foreach (SoundboardButton btn in SoundboardSubForm.Instance.buttons)
                         {
-                            if(btn.Text.Equals(key))
+                            if (btn.Text.Equals(key))
                             {
                                 btn.PlayButton.PerformClick();
                                 return;
@@ -141,13 +140,19 @@ namespace MasterMic
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
-            File.WriteAllText(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MasterMic"), "hotkeys.json"), JsonSerializer.Serialize(hotkeys));
+            File.WriteAllText(Config.KEYBOUNDS_PATH, JsonSerializer.Serialize(hotkeys));
 
             foreach ((string key, KeyBindData value) in hotkeys)
             {
                 UnregisterHotKey(this.Handle, GenerateHotkeyId(key));
             }
             base.OnFormClosed(e);
+        }
+
+        private void buttonCredits_Click(object sender, EventArgs e)
+        {
+            CreditsForm c = new CreditsForm();
+            c.ShowDialog();
         }
     }
 }

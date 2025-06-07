@@ -32,6 +32,7 @@ namespace MasterMic
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DashboardForm));
             panelSideMenu = new Panel();
+            buttonCredits = new Button();
             buttonSoundboard = new Button();
             buttonHome = new Button();
             panelLogo = new Panel();
@@ -45,6 +46,7 @@ namespace MasterMic
             // 
             panelSideMenu.AutoScroll = true;
             panelSideMenu.BackColor = Color.FromArgb(11, 7, 17);
+            panelSideMenu.Controls.Add(buttonCredits);
             panelSideMenu.Controls.Add(buttonSoundboard);
             panelSideMenu.Controls.Add(buttonHome);
             panelSideMenu.Controls.Add(panelLogo);
@@ -53,6 +55,26 @@ namespace MasterMic
             panelSideMenu.Name = "panelSideMenu";
             panelSideMenu.Size = new Size(250, 561);
             panelSideMenu.TabIndex = 0;
+            // 
+            // buttonCredits
+            // 
+            buttonCredits.Dock = DockStyle.Bottom;
+            buttonCredits.FlatAppearance.BorderSize = 0;
+            buttonCredits.FlatAppearance.MouseDownBackColor = Color.FromArgb(31, 27, 37);
+            buttonCredits.FlatAppearance.MouseOverBackColor = Color.FromArgb(21, 17, 27);
+            buttonCredits.FlatStyle = FlatStyle.Flat;
+            buttonCredits.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            buttonCredits.ForeColor = Color.Gainsboro;
+            buttonCredits.Image = (Image)resources.GetObject("buttonCredits.Image");
+            buttonCredits.ImageAlign = ContentAlignment.MiddleLeft;
+            buttonCredits.Location = new Point(0, 527);
+            buttonCredits.Name = "buttonCredits";
+            buttonCredits.Padding = new Padding(10, 0, 0, 0);
+            buttonCredits.Size = new Size(250, 34);
+            buttonCredits.TabIndex = 3;
+            buttonCredits.Text = "Credits";
+            buttonCredits.UseVisualStyleBackColor = true;
+            buttonCredits.Click += buttonCredits_Click;
             // 
             // buttonSoundboard
             // 
@@ -150,5 +172,6 @@ namespace MasterMic
         private Panel panelLogo;
         private Label logoText;
         private Panel panelContent;
+        private Button buttonCredits;
     }
 }

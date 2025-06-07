@@ -152,7 +152,7 @@ namespace MasterMic
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 130);
+            this.ClientSize = new System.Drawing.Size(264, 130);
             this.Controls.Add(this.txtHotkey);
             this.Controls.Add(this.confirmbtn);
             this.Controls.Add(this.deletebtn);

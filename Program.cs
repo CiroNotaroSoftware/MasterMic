@@ -11,9 +11,9 @@ namespace MicEffectEcho
         [STAThread]
         static void Main()
         {
-            if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)+ "\\MasterMic"))
+            if (!Directory.Exists(Config.SOUNDBOARD_PATH))
             {
-                Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\MasterMic");
+                Directory.CreateDirectory(Config.SOUNDBOARD_PATH);
             }
 
             ApplicationConfiguration.Initialize();
